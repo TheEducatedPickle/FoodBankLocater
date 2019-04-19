@@ -2,16 +2,32 @@
 
 {% block head %}
 <script src="{{ url_for('static', filename = 'js/main.js')}}"></script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCcXBAjbujUiiVRO375Dz2_Hm0p6K9ilLM&callback=initMap"></script>
 {% endblock %}
 {% block title %}Food Finder{% endblock %}
 
 {% block body %}
-<div class="container">
-	<br>
-	<h1><center>Food Donation Finder<center></h1>
-	<br>
-	<p>this is pretty much just a template now. But is everything is linked up and we can start directing ajax calls here.</p>
+<div class="main">
+	<div class="container">
+		<div class="row">
+			<br>
+			<h1 class="mainHeader"><center>Santa Cruz Food Finder</center></h1>
+			<br>
+			<p>this is pretty much just a template now. But is everything is linked up and we can start directing ajax calls here.</p>
+		</div>
+		
+		<div class="row">
+			<div id="map"></div>
+		</div>
+		<div class="row">
+			<h3>About</h3>
+			<p>Lorem Ipsum Et quis asperiores dolorum rerum possimus delectus. Possimus magni nemo assumenda fuga eos. Sed ut dolores sint qui porro. Cum in totam laborum. Ut quos eius autem asperiores voluptatem in earum vel. Natus reiciendis qui itaque dolore deleniti nesciunt.
+
+Nihil debitis necessitatibus est distinctio illo molestias. Commodi commodi optio dolore. Doloribus cum inventore voluptatem incidunt et est. Hic consequuntur architecto illum quia. Rerum soluta saepe corrupti. Provident velit est aut reprehenderit et qui.</p>
+		</div>
+	</div>
 </div>
+
 
 
 {% endblock %}

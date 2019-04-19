@@ -1,0 +1,25 @@
+.mainHeader{
+	font-size: 80px;
+}
+body{
+	background-color: #818C91;
+	height: 100%
+}
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+.main{
+	display: flex;
+	flex-flow: column;
+  height: 100%;
+}
+.main .container{
+	flex: 0 1 auto;
+}
+#map {
+  height: 500px;
+  flex: 1 1 auto;
+}
