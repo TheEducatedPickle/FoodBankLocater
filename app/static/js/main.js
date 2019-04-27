@@ -86,3 +86,10 @@ function genDetails(elem){
 		"</center>"
 	return details
 }
+
+$(function(){
+	console.log("loaded")
+	$.getJSON("/loadDates", function(data){
+		console.log(data)
+	})
+})
