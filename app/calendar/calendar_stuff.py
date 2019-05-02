@@ -26,6 +26,8 @@ def load_obj(name ):
         return pickle.load(f)
 
 def getEvents():
+    THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
+
     #save_obj({}, 'locations')
     locations = load_obj("locations")
     print("locations: ", locations)
@@ -36,8 +38,9 @@ def getEvents():
     # The file token.pickle stores the user's access and refresh tokens, and is
     # created automatically when the authorization flow completes for the first
     # time.
-    if os.path.exists('token.pickle'):
-        with open('token.pickle', 'rb') as token:
+    pickleFile = os.path.join(THIS_FOLDER,'token.pickle')
+    if os.path.exists(pickleFile):
+        with open(pickleFile, 'rb') as token:
             creds = pickle.load(token)
     # If there are no (valid) credentials available, let the user log in.
     if not creds or not creds.valid:
@@ -45,7 +48,7 @@ def getEvents():
             creds.refresh(Request())
         else:
             flow = InstalledAppFlow.from_client_secrets_file(
-                'credentials.json', SCOPES)
+                os.path.join(THIS_FOLDER,'credentials.json'), SCOPES)
             creds = flow.run_local_server()
         # Save the credentials for the next run
         with open('token.pickle', 'wb') as token:
