@@ -11,28 +11,28 @@ var v = new Vue({
 Vue.config.devtools = true;
 
 var map
+
+var locations = [
+/*
+	{
+		title: "Graybears Shelter",
+		location: "5224 N Broadway St",
+		lat: 36.975,
+	long: -121.95,
+	hours: "9:00 - 4:00",
+	open: true,
+	},
+	{
+		title: "Greenpeace Center",
+		location: "216 Central Ave",
+		lat: 36.978,
+	long: -122.02,
+	hours: "9:00 - 4:00",
+	open: false,
+	},
+	*/
+]
 function initMap() {
-
-  var locations = [
-  	{
-  		title: "Graybears Shelter",
-  		location: "5224 N Broadway St",
-  		lat: 36.975,
-    	long: -121.95,
-    	hours: "9:00 - 4:00",
-    	open: true,
-  	},
-  	{
-  		title: "Greenpeace Center",
-  		location: "216 Central Ave",
-  		lat: 36.978,
-    	long: -122.02,
-    	hours: "9:00 - 4:00",
-    	open: false,
-  	},
-  ]
-
-
 
   var map = new google.maps.Map(document.getElementById('map'), {
     zoom: 13,
@@ -47,8 +47,9 @@ function initMap() {
   var infowindow = new google.maps.InfoWindow({})
 
   var marker, i
-
+  console.log(locations)
   for (i = 0; i < locations.length; i++) {
+  	console.log(locations[i])
     marker = new google.maps.Marker({
       position: new google.maps.LatLng(locations[i]["lat"], locations[i]["long"]),
       map: map,
@@ -87,9 +88,17 @@ function genDetails(elem){
 	return details
 }
 
+//just load everything all at once, it's like .1mb, who cares lol
 $(function(){
-	console.log("loaded")
-	$.getJSON("/loadDates", function(data){
-		console.log(data)
+	setTimeout(() => {
+		console.log("loaded")
+		$.getJSON("/loadDates", function(data){
+			console.log(data)
+			locations = data['locs']
+			initMap()
+		},200)
 	})
 })
+
+
+

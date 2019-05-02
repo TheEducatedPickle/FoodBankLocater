@@ -4,7 +4,7 @@
 from flask import render_template, request, jsonify
 
 from app import app
-
+from app.calendar.calendar_stuff import getEvents
 
 @app.route('/')
 def index():
@@ -17,6 +17,7 @@ def load_dates():
 	print("LOAD DATES: ", data)
 	rtData["test"] = "foo"
 	rtData["locationInfo"] = getLocationInfo()
+	rtData["locs"] = getEvents()
 	return jsonify(rtData)
 
 def getLocationInfo():

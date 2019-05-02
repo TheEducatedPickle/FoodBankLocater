@@ -2,14 +2,27 @@ from __future__ import print_function
 import datetime
 import pickle
 import os.path
+import requests
+import json
+import urllib.parse
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 
 # If modifying these scopes, delete the file token.pickle.
 SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
+def save_obj(obj, name ):
+    with open('obj/'+ name + '.pkl', 'wb') as f:
+        pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
+
+def load_obj(name ):
+    with open('obj/' + name + '.pkl', 'rb') as f:
+        return pickle.load(f)
 
 def getEvents():
+    #save_obj({}, 'locations')
+    locations = load_obj("locations")
+    print("locations: ", locations)
     """Shows basic usage of the Google Calendar API.
     Prints the start and name of the next 10 events on the user's calendar.
     """
@@ -42,14 +55,40 @@ def getEvents():
                                         orderBy='startTime').execute()
     events = events_result.get('items', [])
 
+    filtered_events = []
+
+
     if not events:
         print('No upcoming events found.')
     for event in events:
         start = event['start'].get('dateTime', event['start'].get('date'))
-        end = event['end'].get('dateTime', event['end'].get('date'))
-        location = event['location']
-        print(start, end, location, event['summary'])
-    return events
+        print(event)
+        temp_event = {}
+        temp_event['title'] = event['summary']
+        temp_event['location'] = event['location']
+        temp_event['start'] = event['start'].get('dateTime', event['start'].get('date'))
+        temp_event['end'] = event['start'].get('dateTime', event['end'].get('date'))
+
+        if not event['id'] in locations:
+            print("no latlong")
+            url = "https://maps.googleapis.com/maps/api/geocode/json?"
+            req = {}
+            req['address'] = event['location' + "California USA"]
+            req['key'] = "AIzaSyCcXBAjbujUiiVRO375Dz2_Hm0p6K9ilLM"
+            r = requests.get(url + urllib.parse.urlencode(req))
+            geo = r.json()['results'][0]['geometry']['location']
+            print(geo)
+            locations[event['id']] = geo
+            save_obj(locations, "locations")
+
+        temp_event['lat'] = locations[event['id']]['lat']
+        temp_event['long'] = locations[event['id']]['lng']
+        print(temp_event)
+        filtered_events.append(temp_event)
+    return filtered_events
+
+
+
 
 if __name__ == '__main__':
     getEvents()
