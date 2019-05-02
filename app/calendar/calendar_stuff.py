@@ -1,6 +1,7 @@
 from __future__ import print_function
 import datetime
 import pickle
+import os
 import os.path
 import requests
 import json
@@ -12,11 +13,16 @@ from google.auth.transport.requests import Request
 # If modifying these scopes, delete the file token.pickle.
 SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
 def save_obj(obj, name ):
-    with open('obj/'+ name + '.pkl', 'wb') as f:
+    import os
+    THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
+    my_file = os.path.join('obj/'+ name + '.pkl')
+    with open(my_file, 'wb') as f:
         pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
 
 def load_obj(name ):
-    with open('obj/' + name + '.pkl', 'rb') as f:
+    THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
+    my_file = os.path.join('obj/'+ name + '.pkl')
+    with open(my_file, 'rb') as f:
         return pickle.load(f)
 
 def getEvents():
@@ -73,7 +79,7 @@ def getEvents():
             print("no latlong")
             url = "https://maps.googleapis.com/maps/api/geocode/json?"
             req = {}
-            req['address'] = event['location' + "California USA"]
+            req['address'] = event['location'] + "California USA"
             req['key'] = "AIzaSyCcXBAjbujUiiVRO375Dz2_Hm0p6K9ilLM"
             r = requests.get(url + urllib.parse.urlencode(req))
             geo = r.json()['results'][0]['geometry']['location']
