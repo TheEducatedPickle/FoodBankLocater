@@ -71,7 +71,7 @@ def getEvents():
         print('No upcoming events found.')
     for event in events:
         start = event['start'].get('dateTime', event['start'].get('date'))
-        print(event)
+
         temp_event = {}
         temp_event['title'] = event['summary']
         temp_event['location'] = event['location']
@@ -86,13 +86,12 @@ def getEvents():
             req['key'] = "AIzaSyCcXBAjbujUiiVRO375Dz2_Hm0p6K9ilLM"
             r = requests.get(url + urllib.parse.urlencode(req))
             geo = r.json()['results'][0]['geometry']['location']
-            print(geo)
+
             locations[event['id']] = geo
             save_obj(locations, "locations")
 
         temp_event['lat'] = locations[event['id']]['lat']
         temp_event['long'] = locations[event['id']]['lng']
-        print(temp_event)
         filtered_events.append(temp_event)
     return filtered_events
 

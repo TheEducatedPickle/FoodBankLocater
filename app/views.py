@@ -15,8 +15,7 @@ def load_dates():
 	rtData = {}
 	data = request.data
 	print("LOAD DATES: ", data)
-	rtData["test"] = "foo"
-	rtData["locationInfo"] = getLocationInfo()
+	
 	rtData["locs"] = getEvents()
 	return jsonify(rtData)
 

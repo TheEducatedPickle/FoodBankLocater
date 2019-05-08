@@ -7,8 +7,9 @@ var v = new Vue({
   beforeMount(){
   },
 })
-
 Vue.config.devtools = true;
+
+
 
 var map
 
