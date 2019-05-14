@@ -2,7 +2,7 @@
 	font-size: 80px;
 }
 body{
-	background-color: #818C91;
+	background: linear-gradient(180deg, rgb(241, 241, 241) 35%, rgba(250,244,235,1) 100%);
 	height: 100%
 }
 html,

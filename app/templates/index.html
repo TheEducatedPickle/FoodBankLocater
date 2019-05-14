@@ -3,6 +3,8 @@
 {% block head %}
 <script src="{{ url_for('static', filename = 'js/main.js')}}"></script>
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCcXBAjbujUiiVRO375Dz2_Hm0p6K9ilLM"></script>
+<link href="{{ url_for('static', filename = 'js/pickerjs/src/css/picker.css')}}" rel="stylesheet">
+<script src="{{ url_for('static', filename = 'js/pickerjs/src/js/picker.js')}}"></script>
 {% endblock %}
 {% block title %}Food Finder{% endblock %}
 
@@ -11,22 +13,41 @@
 	<div class="container">
 		<div class="row">
 			<br>
-			<h1 class="mainHeader"><center>Santa Cruz Food Finder</center></h1>
+			<h1 class="mainHeader">
+				<center>Santa Cruz Food Finder</center>
+			</h1>
 			<br>
-			<p>this is pretty much just a template now. But is everything is linked up and we can start directing ajax calls here.</p>
+			<p>this is pretty much just a template now. But is everything is linked up and we can start directing ajax
+				calls here.</p>
 		</div>
-		
+
+		From: <input type="text" id='start' value="02:56" onkeydown="setStart(this)">
+		To: <input type="text" id='end' value="17:00" onkeydown="setEnd(this)">
+
+		<script>
+			var startin = document.getElementById('start');
+			var picker = new Picker(startin, {
+				format: 'YYYY/MM/DD HH:mm',
+			});
+		</script>
+
 		<div class="row">
 			<div id="map"></div>
 		</div>
 		<div class="row">
 			<h3>About</h3>
-			<p>Lorem Ipsum Et quis asperiores dolorum rerum possimus delectus. Possimus magni nemo assumenda fuga eos. Sed ut dolores sint qui porro. Cum in totam laborum. Ut quos eius autem asperiores voluptatem in earum vel. Natus reiciendis qui itaque dolore deleniti nesciunt.
+			<p>Lorem Ipsum Et quis asperiores dolorum rerum possimus delectus. Possimus magni nemo assumenda fuga eos.
+				Sed ut dolores sint qui porro. Cum in totam laborum. Ut quos eius autem asperiores voluptatem in earum
+				vel. Natus reiciendis qui itaque dolore deleniti nesciunt.
 
-Nihil debitis necessitatibus est distinctio illo molestias. Commodi commodi optio dolore. Doloribus cum inventore voluptatem incidunt et est. Hic consequuntur architecto illum quia. Rerum soluta saepe corrupti. Provident velit est aut reprehenderit et qui.</p>
+				Nihil debitis necessitatibus est distinctio illo molestias. Commodi commodi optio dolore. Doloribus cum
+				inventore voluptatem incidunt et est. Hic consequuntur architecto illum quia. Rerum soluta saepe
+				corrupti. Provident velit est aut reprehenderit et qui.</p>
 		</div>
 	</div>
 </div>
+
+<script src="../static/js/initpickers.js"></script>
 
 
 
