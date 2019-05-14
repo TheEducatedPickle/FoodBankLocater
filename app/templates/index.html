@@ -17,12 +17,11 @@
 				<center>Santa Cruz Food Finder</center>
 			</h1>
 			<br>
-			<p>this is pretty much just a template now. But is everything is linked up and we can start directing ajax
-				calls here.</p>
+			<p>Welcome to Santa Cruz Food Finder, a resource provided by Second Harvest Food Bank</p>
 		</div>
 
-		From: <input type="text" id='start' value="02:56" onkeydown="setStart(this)">
-		To: <input type="text" id='end' value="17:00" onkeydown="setEnd(this)">
+		From: <input type="text" id='start' value="08:00" onkeydown="updateBound(this.value,'start')">
+		To: <input type="text" id='end' value="17:00" onkeydown="updateBound(this.value,'end')">
 
 		<script>
 			var startin = document.getElementById('start');

@@ -10,6 +10,8 @@ var v = new Vue({
 Vue.config.devtools = true;
 
 var map
+var startTime = 480 //time in minutes
+var endTime = 1020
 
 var locations = [
 	/*
@@ -33,12 +35,13 @@ var locations = [
 ]
 
 function shouldFilter(location) {
-	var blacklist = ['blacklistme']
+	var favorites = ['Location 1', 'Location 3']
 	var startTime = location['start']
 	var endTime = location['end']
-
-	console.log(startTime)
-	console.log(endTime)
+	if (favorites.length > 0 && !favorites.includes(location['title'])) {
+		return true;
+	}
+	
 	return false;
 }
 
@@ -75,6 +78,14 @@ function initMap() {
 				}
 			})(marker, i)
 		)
+	}
+}
+
+function updateBound(time, bound) {
+	if (bound === 'start') {
+		start = time
+	} else if (bound === 'end') {
+		end = time
 	}
 }
 
