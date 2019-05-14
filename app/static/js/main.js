@@ -9,9 +9,10 @@ var v = new Vue({
 })
 Vue.config.devtools = true;
 
+var showOnlyFavorites = false
 var map
-var startTime = 480 //time in minutes
-var endTime = 1020
+var filterStartTime = 600 //time in minutes
+var filterEndTime = 1020
 
 var locations = [
 	/*
@@ -35,14 +36,26 @@ var locations = [
 ]
 
 function shouldFilter(location) {
-	var favorites = ['Location 1', 'Location 3']
-	var startTime = location['start']
-	var endTime = location['end']
-	if (favorites.length > 0 && !favorites.includes(location['title'])) {
+	let favorites = ['Location 1', 'Location 3']
+	let tempTime = location['start'].split('T')[1].split('-')
+	let startTime = tempTime[0].split(':')
+	let startTimeInMinutes = convertToMinutes(parseInt(startTime[0]), parseInt(startTime[1]))
+	let endTime = tempTime[1].split(':')
+	let endTimeInMinutes = convertToMinutes(parseInt(endTime[0]), parseInt(endTime[1]))
+	
+	if (favorites.length > 0 && !favorites.includes(location['title']) && showOnlyFavorites) { //dont show location if it isn't favorited
 		return true;
+	}
+
+	if (startTimeInMinutes < filterStartTime || endTimeInMinutes > filterEndTime) { //too early or late
+		return true
 	}
 	
 	return false;
+}
+
+function convertToMinutes(hours, minutes) {
+	return hours * 60 + minutes
 }
 
 function initMap() {
@@ -83,9 +96,9 @@ function initMap() {
 
 function updateBound(time, bound) {
 	if (bound === 'start') {
-		start = time
+		filterStartTime = time
 	} else if (bound === 'end') {
-		end = time
+		filterEndTime = time
 	}
 }
 
