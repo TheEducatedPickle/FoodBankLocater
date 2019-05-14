@@ -3,8 +3,6 @@
 {% block head %}
 <script src="{{ url_for('static', filename = 'js/main.js')}}"></script>
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCcXBAjbujUiiVRO375Dz2_Hm0p6K9ilLM"></script>
-<link href="{{ url_for('static', filename = 'js/pickerjs/src/css/picker.css')}}" rel="stylesheet">
-<script src="{{ url_for('static', filename = 'js/pickerjs/src/js/picker.js')}}"></script>
 {% endblock %}
 {% block title %}Food Finder{% endblock %}
 
@@ -22,13 +20,9 @@
 
 		From: <input type="text" id='start' value="08:00" onkeydown="updateBound(this.value,'start')">
 		To: <input type="text" id='end' value="17:00" onkeydown="updateBound(this.value,'end')">
-
-		<script>
-			var startin = document.getElementById('start');
-			var picker = new Picker(startin, {
-				format: 'YYYY/MM/DD HH:mm',
-			});
-		</script>
+		<br>
+		<input type="checkbox" id="favfilter" value="true" onclick="favfilterToggle()">Only show favorites
+		<br>
 
 		<div class="row">
 			<div id="map"></div>
@@ -45,9 +39,5 @@
 		</div>
 	</div>
 </div>
-
-<script src="../static/js/initpickers.js"></script>
-
-
 
 {% endblock %}

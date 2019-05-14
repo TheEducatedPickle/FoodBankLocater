@@ -9,10 +9,11 @@ var v = new Vue({
 })
 Vue.config.devtools = true;
 
-var showOnlyFavorites = false
+var showOnlyFavorites = false;
 var map
 var filterStartTime = 600 //time in minutes
 var filterEndTime = 1020
+let lat = 36.97, lng = -121.99
 
 var locations = [
 	/*
@@ -58,10 +59,15 @@ function convertToMinutes(hours, minutes) {
 	return hours * 60 + minutes
 }
 
+function favfilterToggle() {
+	showOnlyFavorites = document.getElementById('favfilter').checked
+	initMap()
+}
+
 function initMap() {
 	var map = new google.maps.Map(document.getElementById('map'), {
 		zoom: 13,
-		center: new google.maps.LatLng(36.97, -121.99),
+		center: new google.maps.LatLng(lat, lng),
 		mapTypeId: google.maps.MapTypeId.ROADMAP,
 		mapTypeControl: false,
 		fullscreenControl: false,
