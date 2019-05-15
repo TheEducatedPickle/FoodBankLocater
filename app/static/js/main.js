@@ -37,7 +37,7 @@ var locations = [
 ]
 
 function shouldFilter(location) {
-	let favorites = ['Location 1', 'Location 3']
+	let favorites = ['Location 1', 'Location 3','Location 6']
 	let tempTime = location['start'].split('T')[1].split('-')
 	let startTime = tempTime[0].split(':')
 	let startTimeInMinutes = convertToMinutes(parseInt(startTime[0]), parseInt(startTime[1]))
