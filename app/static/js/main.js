@@ -100,12 +100,10 @@ function initMap() {
 	}
 }
 
-function updateBound(time, bound) {
-	if (bound === 'start') {
-		filterStartTime = time
-	} else if (bound === 'end') {
-		filterEndTime = time
-	}
+function updateBound() {
+	filterStartTime = convertToMinutes(document.getElementById('startH').value+document.getElementById('startTOD').value,document.getElementById('startM').value)
+	filterEndTime = convertToMinutes(document.getElementById('endH').value+document.getElementById('endTOD').value,document.getElementById('endM').value)
+	initMap()
 }
 
 //I hate this
