@@ -14,6 +14,7 @@ var map
 var filterStartTime = 600 //time in minutes
 var filterEndTime = 1020
 let lat = 36.97, lng = -121.99
+let favorites = ['Location 1', 'Location 3','Location 6']
 
 var locations = [
 	/*
@@ -37,7 +38,6 @@ var locations = [
 ]
 
 function shouldFilter(location) {
-	let favorites = ['Location 1', 'Location 3','Location 6']
 	let tempTime = location['start'].split('T')[1].split('-')
 	let startTime = tempTime[0].split(':')
 	let startTimeInMinutes = convertToMinutes(parseInt(startTime[0]), parseInt(startTime[1]))
@@ -49,6 +49,7 @@ function shouldFilter(location) {
 	}
 
 	if (startTimeInMinutes < filterStartTime || endTimeInMinutes > filterEndTime) { //too early or late
+		console.log('Filtered ' + location['title'] + startTimeInMinutes)
 		return true
 	}
 	
@@ -112,15 +113,15 @@ function genDetails(elem) {
 		"<center>" +
 		"<h6>" + elem.title + "</h6>" +
 		"<p>" + elem.location + "</p>"
-
+	
 	if (elem.open) {
 		details += "<p>Open: <span style='color: green'>"
 	}
 	else {
 		details += "<p>Closed: <span style='color: red'>"
 	}
-
-	details = details + elem.hours + "</span></p>" +
+	
+	details = details  + "</span></p>" +
 		"<a href='https://www.google.com/maps/dir/?api=1&destination=" + elem.lat + "," + elem.long + "' class='btn btn-primary'>Get Directions</a>" +
 		"</center>"
 	return details
