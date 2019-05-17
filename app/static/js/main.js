@@ -14,7 +14,7 @@ var map
 var filterStartTime = 600 //time in minutes
 var filterEndTime = 1020
 let lat = 36.97, lng = -121.99
-let favorites = ['Location 1', 'Location 3','Location 6']
+let favorites = []
 
 var locations = [
 	/*
@@ -66,6 +66,9 @@ function favfilterToggle() {
 }
 
 function initMap() {
+
+
+
 	var map = new google.maps.Map(document.getElementById('map'), {
 		zoom: 13,
 		center: new google.maps.LatLng(lat, lng),
@@ -128,7 +131,23 @@ function genDetails(elem) {
 }
 
 //just load everything all at once, it's like .1mb, who cares lol
+
+function loadFavorites(){
+	favorites = Cookies.getJSON("favorites")
+	if (favorites == null){
+		Cookies.set("favorites", [])
+		favorites = []
+	}
+}
+function updateFavorites(){
+	Cookies.set("favorites", favorites)
+}
+
+
 $(function () {
+
+	loadFavorites()
+
 	setTimeout(() => {
 		console.log("loaded")
 		$.getJSON("/loadDates", function (data) {
@@ -136,7 +155,9 @@ $(function () {
 			locations = data['locs']
 			initMap()
 		}, 200)
+		
 	})
+
 })
 
 
