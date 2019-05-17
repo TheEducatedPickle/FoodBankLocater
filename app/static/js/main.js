@@ -130,7 +130,6 @@ function genDetails(elem) {
 	return details
 }
 
-//just load everything all at once, it's like .1mb, who cares lol
 
 function loadFavorites(){
 	favorites = Cookies.getJSON("favorites")
@@ -139,13 +138,13 @@ function loadFavorites(){
 		favorites = []
 	}
 }
+//use this every time you add or remove something from favorites
 function updateFavorites(){
 	Cookies.set("favorites", favorites)
 }
 
 
 $(function () {
-
 	loadFavorites()
 
 	setTimeout(() => {
