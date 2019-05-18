@@ -37,7 +37,7 @@ var locations = [
 		*/
 ]
 
-function shouldFilter(location) {
+function shouldFilter(location, byTime = false) {
 	let tempTime = location['start'].split('T')[1].split('-')
 	let startTime = tempTime[0].split(':')
 	let startTimeInMinutes = convertToMinutes(parseInt(startTime[0]), parseInt(startTime[1]))
@@ -47,8 +47,9 @@ function shouldFilter(location) {
 	if (favorites.length > 0 && !favorites.includes(location['title']) && showOnlyFavorites) { //dont show location if it isn't favorited
 		return true;
 	}
+	console.log($("#startDate").val())
 
-	if (startTimeInMinutes < filterStartTime || endTimeInMinutes > filterEndTime) { //too early or late
+	if (byTime && startTimeInMinutes < filterStartTime || endTimeInMinutes > filterEndTime) { //too early or late
 		console.log('Filtered ' + location['title'] + startTimeInMinutes)
 		return true
 	}
@@ -66,8 +67,6 @@ function favfilterToggle() {
 }
 
 function initMap() {
-
-
 
 	var map = new google.maps.Map(document.getElementById('map'), {
 		zoom: 13,
@@ -145,6 +144,11 @@ function updateFavorites(){
 
 
 $(function () {
+	//Set date pickers to today and 1 week from today
+	today = new Date()
+	document.getElementById('startDate').valueAsDate = today
+	today.setDate(today.getDate() + 7)
+	document.getElementById('endDate').valueAsDate = today
 	loadFavorites()
 
 	setTimeout(() => {
