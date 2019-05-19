@@ -45,7 +45,7 @@ function shouldFilter(location, byTime = false) {
 	let startTime = tempTime[0].split(':')
 	let endTime = tempTime[1].split(':')
 	
-	if (favorites.length > 0 && !favorites.includes(location['title']) && showOnlyFavorites) { //dont show location if it isn't favorited
+	if (!favorites.includes(location['title']) && showOnlyFavorites) { //dont show location if it isn't favorited
 		return true;
 	}
 	//console.log(new Date($('#startDate').val()))
@@ -63,7 +63,7 @@ function shouldFilter(location, byTime = false) {
 	let inRange = (locCmpDate.getTime() > filterStartDate.getTime() && locCmpDate.getTime() < filterEndDate.getTime())
 	//console.log('THIS EVENTS DATE IS: ' + locCmpDate)
 	
-	console.log(inRange + ' - ' + locCmpDate)
+	//console.log(inRange + ' - ' + locCmpDate)
 	return !(inRange);
 }
 
@@ -128,6 +128,16 @@ function genDetails(elem){
 	var details = 
 		"<center>" +
 		"<h6>" + elem.title + "</h6>" +
+
+		/*
+		'<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">' +
+		'<label for="id-of-input" class="custom-checkbox">' +
+		'<input type="checkbox" id="id-of-input"/>' +
+		'<i class="glyphicon glyphicon-star-empty"></i>' +
+		'<i class="glyphicon glyphicon-star"></i>' +
+		  '</label>' +
+		  */
+		
 		"<p>" + elem.location + "</p>" 
 
 		let tempTime = elem['start'].split('T')[1].split('-')
@@ -162,6 +172,25 @@ function updateFavorites(){
 	Cookies.set("favorites", favorites)
 }
 
+//Google Maps gives us a seperate event for each date. 
+//Condense them to a single event per location
+function condenseLocations(locations) {
+	let i = 0
+	let map = new Object()
+	while (i < locations.length) {
+		loc = locations[i]['location']
+		if(!(loc in map)) {
+			map[loc] = i
+			locations[i]['openTimes'] = [locations[i]['start']]
+			i += 1
+		} else {
+			let j = map[loc]
+			locations[j]['openTimes'].push(locations[i]['start'])
+			locations.splice(i,1)
+		}
+	}
+}
+
 
 $(function () {
 	//Set date pickers to today and 1 week from today
@@ -174,17 +203,16 @@ $(function () {
 	filterEndDate = end
 	filterEndDate.setHours(23,59,59,0)
 	loadFavorites()
-
+	
 	setTimeout(() => {
 		console.log("loaded")
 		$.getJSON("/loadDates", function (data) {
 			console.log(data)
 			locations = data['locs']
+			condenseLocations(locations)
 			initMap()
 		}, 200)
-		
 	})
-
 })
 
 

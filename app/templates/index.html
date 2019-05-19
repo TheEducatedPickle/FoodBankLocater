@@ -15,85 +15,17 @@
 				<center>Santa Cruz Food Finder</center>
 			</h1>
 			<br>
-			<p>Welcome to Santa Cruz Food Finder, a resource provided by Second Harvest Food Bank</p>
+			<p>Available food pantries in the Santa Cruz Area:</p>
 		</div>
-
-		<label>From:</label>
-		<input type="date" id="startDate" onchange="updateBound()">
-		<!--
-		<select id='startH' onchange="updateBound()">
-			<option value=1>1</option>
-			<option value=2>2</option>
-			<option value=3>3</option>
-			<option value=4>4</option>
-			<option value=5>5</option>
-			<option value=6>6</option>
-			<option value=7>7</option>
-			<option value=8 selected="selected">8</option>
-			<option value=9>9</option>
-			<option value=10>10</option>
-			<option value=11>11</option>
-			<option value=12>12</option>
-		</select>
-		<select id='startM' onchange="updateBound()">
-			<option value=0 selected="selected">00</option>
-			<option value=5>05</option>
-			<option value=10>10</option>
-			<option value=15>15</option>
-			<option value=20>20</option>
-			<option value=25>25</option>
-			<option value=30>30</option>
-			<option value=35>35</option>
-			<option value=40>40</option>
-			<option value=45>45</option>
-			<option value=50>50</option>
-			<option value=55>55</option>
-		</select>
-		<select id='startTOD' onchange="updateBound()">
-			<option value=0 selected="selected">am</option>
-			<option value=720>pm</option>
-		</select>
-		-->
-		<br>
-		<label>To:</label>
-		<input type="date" id="endDate" onchange="updateBound()">
-		<!--
-		<select id='endH' onchange="updateBound()">
-			<option value=1>1</option>
-			<option value=2>2</option>
-			<option value=3>3</option>
-			<option value=4>4</option>
-			<option value=5 selected="selected">5</option>
-			<option value=6>6</option>
-			<option value=7>7</option>
-			<option value=8>8</option>
-			<option value=9>9</option>
-			<option value=10>10</option>
-			<option value=11>11</option>
-			<option value=12>12</option>
-		</select>
-		<select id='endM' onchange="updateBound()">
-			<option value=0 selected="selected">00</option>
-			<option value=5>05</option>
-			<option value=10>10</option>
-			<option value=15>15</option>
-			<option value=20>20</option>
-			<option value=25>25</option>
-			<option value=30>30</option>
-			<option value=35>35</option>
-			<option value=40>40</option>
-			<option value=45>45</option>
-			<option value=50>50</option>
-			<option value=55>55</option>
-		</select>
-		<select id='endTOD' onchange="updateBound()">
-			<option value=0>am</option>
-			<option value=720 selected="selected">pm</option>
-		</select>
-		-->
-		<br>
-		<input type="checkbox" id="favfilter" value="true" onclick="favfilterToggle()">Only show favorites
-		<br>
+		<div>
+			<label>From:</label>
+			<input type="date" id="startDate" onchange="updateBound()">
+			<br>
+			<label>To:</label>
+			<input type="date" id="endDate" onchange="updateBound()">
+			<br>
+			<input type="checkbox" id="favfilter" value="true" onclick="favfilterToggle()">Only favorites
+		</div>
 
 		<div class="row">
 			<div id="map"></div>
