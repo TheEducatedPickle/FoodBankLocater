@@ -1,3 +1,4 @@
+/*
 var v = new Vue({
 	el: '#vue-div',
 	data: {
@@ -8,11 +9,13 @@ var v = new Vue({
 	},
 })
 Vue.config.devtools = true;
-
+*/
 var showOnlyFavorites = false;
 var map
 var filterStartTime = 600 //time in minutes
 var filterEndTime = 1020
+var filterStartDate = null
+var filterEndDate = null
 let lat = 36.97, lng = -121.99
 let favorites = []
 
@@ -40,19 +43,18 @@ var locations = [
 function shouldFilter(location, byTime = false) {
 	let tempTime = location['start'].split('T')[1].split('-')
 	let startTime = tempTime[0].split(':')
-	let startTimeInMinutes = convertToMinutes(parseInt(startTime[0]), parseInt(startTime[1]))
 	let endTime = tempTime[1].split(':')
-	let endTimeInMinutes = convertToMinutes(parseInt(endTime[0]), parseInt(endTime[1]))
 	
 	if (favorites.length > 0 && !favorites.includes(location['title']) && showOnlyFavorites) { //dont show location if it isn't favorited
 		return true;
 	}
-	console.log($("#startDate").val())
-
+	//console.log(new Date($('#startDate').val()))
+	/*
 	if (byTime && startTimeInMinutes < filterStartTime || endTimeInMinutes > filterEndTime) { //too early or late
 		console.log('Filtered ' + location['title'] + startTimeInMinutes)
 		return true
 	}
+	*/
 	
 	return false;
 }
@@ -104,26 +106,36 @@ function initMap() {
 }
 
 function updateBound() {
-	filterStartTime = convertToMinutes(document.getElementById('startH').value+document.getElementById('startTOD').value,document.getElementById('startM').value)
-	filterEndTime = convertToMinutes(document.getElementById('endH').value+document.getElementById('endTOD').value,document.getElementById('endM').value)
+	filterStartDate = new Date($('#startDate').val())
+	filterStartDate.setHours(0,0,0,0)
+	filterEndDate = new Date($('#endDate').val())
+	filterEndDate.setHours(23,59,59,0)
+	//filterStartTime = convertToMinutes(document.getElementById('startH').value+document.getElementById('startTOD').value,document.getElementById('startM').value)
+	//filterEndTime = convertToMinutes(document.getElementById('endH').value+document.getElementById('endTOD').value,document.getElementById('endM').value)
 	initMap()
 }
 
 //I hate this
-function genDetails(elem) {
-	var details =
+function genDetails(elem){
+	var details = 
 		"<center>" +
 		"<h6>" + elem.title + "</h6>" +
-		"<p>" + elem.location + "</p>"
-	
-	if (elem.open) {
-		details += "<p>Open: <span style='color: green'>"
-	}
-	else {
-		details += "<p>Closed: <span style='color: red'>"
-	}
-	
-	details = details  + "</span></p>" +
+		"<p>" + elem.location + "</p>" 
+
+		let tempTime = elem['start'].split('T')[1].split('-')
+		let startTemp = tempTime[0].split(':')
+		let startTime = startTemp[0] + ':' + startTemp[1]
+		let endTemp = tempTime[1].split(':')
+		let endTime = endTemp[0] + ':' + endTemp[1]
+
+		if(elem.open){
+			details += "<p>Open: <span style='color: green'>"
+		}
+		else{
+			details += "<p>Closed: <span style='color: red'>"
+		}
+
+		details = details + startTime + " - " + endTime + "</span></p>" +
 		"<a href='https://www.google.com/maps/dir/?api=1&destination=" + elem.lat + "," + elem.long + "' class='btn btn-primary'>Get Directions</a>" +
 		"</center>"
 	return details
@@ -147,8 +159,10 @@ $(function () {
 	//Set date pickers to today and 1 week from today
 	today = new Date()
 	document.getElementById('startDate').valueAsDate = today
+	filterStartDate = today
 	today.setDate(today.getDate() + 7)
 	document.getElementById('endDate').valueAsDate = today
+	filterEndDate = today
 	loadFavorites()
 
 	setTimeout(() => {
