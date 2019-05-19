@@ -55,8 +55,16 @@ function shouldFilter(location, byTime = false) {
 		return true
 	}
 	*/
+
+	//Check date range
+	let locdate = location['start'].split('T')[0]
+	let locTime = location['start'].split('T')[1].split('-')[0]
+	let locCmpDate = new Date(locdate+'T'+locTime)
+	let inRange = (locCmpDate.getTime() > filterStartDate.getTime() && locCmpDate.getTime() < filterEndDate.getTime())
+	//console.log('THIS EVENTS DATE IS: ' + locCmpDate)
 	
-	return false;
+	console.log(inRange + ' - ' + locCmpDate)
+	return !(inRange);
 }
 
 function convertToMinutes(hours, minutes) {
@@ -128,7 +136,7 @@ function genDetails(elem){
 		let endTemp = tempTime[1].split(':')
 		let endTime = endTemp[0] + ':' + endTemp[1]
 
-		if(elem.open){
+		if(elem.open){	
 			details += "<p>Open: <span style='color: green'>"
 		}
 		else{
@@ -160,9 +168,11 @@ $(function () {
 	today = new Date()
 	document.getElementById('startDate').valueAsDate = today
 	filterStartDate = today
-	today.setDate(today.getDate() + 7)
-	document.getElementById('endDate').valueAsDate = today
-	filterEndDate = today
+	end = new Date()
+	end.setDate(today.getDate() + 7)
+	document.getElementById('endDate').valueAsDate = end
+	filterEndDate = end
+	filterEndDate.setHours(23,59,59,0)
 	loadFavorites()
 
 	setTimeout(() => {
