@@ -146,6 +146,7 @@ function genDetails(elem){
 		let endTemp = tempTime[1].split(':')
 		let endTime = endTemp[0] + ':' + endTemp[1]
 
+		
 		if(elem.open){	
 			details += "<p>Open: <span style='color: green'>"
 		}
@@ -153,7 +154,7 @@ function genDetails(elem){
 			details += "<p>Closed: <span style='color: red'>"
 		}
 
-		details = details + startTime + " - " + endTime + "</span></p>" +
+		details = details + startTime + " - " + endTime + "</span><br>" + getOpenDays(elem['openTimes']) + "</br>" + "</p>" +
 		"<a href='https://www.google.com/maps/dir/?api=1&destination=" + elem.lat + "," + elem.long + "' class='btn btn-primary'>Get Directions</a>" +
 		"</center>"
 	return details
@@ -166,6 +167,23 @@ function loadFavorites(){
 		Cookies.set("favorites", [])
 		favorites = []
 	}
+}
+
+function getOpenDays(dates) {
+	let set = new Set()
+	let numToDate = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
+	for (let i = 0; i < dates.length; i++) {
+		let temp = dates[i].split('T')
+		let locdate = temp[0]
+		let locTime = temp[1].split('-')[0]
+		let dateObj = new Date(locdate+'T'+locTime)
+		set.add(dateObj.getDay())
+	}
+	out = ""
+	set.forEach((value1, value2) => out += numToDate[value1] + ",")
+	out = out.substring(0,out.length-1)
+	console.log(out)
+	return out
 }
 //use this every time you add or remove something from favorites
 function updateFavorites(){
