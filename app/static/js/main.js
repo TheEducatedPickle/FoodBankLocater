@@ -44,7 +44,7 @@ function shouldFilter(location, byTime = false) {
 	let tempTime = location['start'].split('T')[1].split('-')
 	let startTime = tempTime[0].split(':')
 	let endTime = tempTime[1].split(':')
-	
+
 	if (!favorites.includes(location['title']) && showOnlyFavorites) { //dont show location if it isn't favorited
 		return true;
 	}
@@ -59,10 +59,10 @@ function shouldFilter(location, byTime = false) {
 	//Check date range
 	let locdate = location['start'].split('T')[0]
 	let locTime = location['start'].split('T')[1].split('-')[0]
-	let locCmpDate = new Date(locdate+'T'+locTime)
+	let locCmpDate = new Date(locdate + 'T' + locTime)
 	let inRange = (locCmpDate.getTime() > filterStartDate.getTime() && locCmpDate.getTime() < filterEndDate.getTime())
 	//console.log('THIS EVENTS DATE IS: ' + locCmpDate)
-	
+
 	//console.log(inRange + ' - ' + locCmpDate)
 	return !(inRange);
 }
@@ -89,7 +89,7 @@ function initMap() {
 	})
 
 	var infowindow = new google.maps.InfoWindow({})
-	
+
 	var marker, i
 	for (i = 0; i < locations.length; i++) {
 		if (shouldFilter(locations[i])) {
@@ -99,7 +99,7 @@ function initMap() {
 			position: new google.maps.LatLng(locations[i]["lat"], locations[i]["long"]),
 			map: map,
 		})
-		
+
 		google.maps.event.addListener(
 			marker,
 			'click',
@@ -115,17 +115,17 @@ function initMap() {
 
 function updateBound() {
 	filterStartDate = new Date($('#startDate').val())
-	filterStartDate.setHours(0,0,0,0)
+	filterStartDate.setHours(0, 0, 0, 0)
 	filterEndDate = new Date($('#endDate').val())
-	filterEndDate.setHours(23,59,59,0)
+	filterEndDate.setHours(23, 59, 59, 0)
 	//filterStartTime = convertToMinutes(document.getElementById('startH').value+document.getElementById('startTOD').value,document.getElementById('startM').value)
 	//filterEndTime = convertToMinutes(document.getElementById('endH').value+document.getElementById('endTOD').value,document.getElementById('endM').value)
 	initMap()
 }
 
 //I hate this
-function genDetails(elem){
-	var details = 
+function genDetails(elem) {
+	var details =
 		"<center>" +
 		"<h6>" + elem.title + "</h6>" +
 
@@ -137,33 +137,33 @@ function genDetails(elem){
 		'<i class="glyphicon glyphicon-star"></i>' +
 		  '</label>' +
 		  */
-		
-		"<p>" + elem.location + "</p>" 
 
-		let tempTime = elem['start'].split('T')[1].split('-')
-		let startTemp = tempTime[0].split(':')
-		let startTime = startTemp[0] + ':' + startTemp[1]
-		let endTemp = tempTime[1].split(':')
-		let endTime = endTemp[0] + ':' + endTemp[1]
+		"<p>" + elem.location + "</p>"
 
-		
-		if(elem.open){	
-			details += "<p>Open: <span style='color: green'>"
-		}
-		else{
-			details += "<p>Closed: <span style='color: red'>"
-		}
+	let tempTime = elem['start'].split('T')[1].split('-')
+	let startTemp = tempTime[0].split(':')
+	let startTime = startTemp[0] + ':' + startTemp[1]
+	let endTemp = tempTime[1].split(':')
+	let endTime = endTemp[0] + ':' + endTemp[1]
 
-		details = details + startTime + " - " + endTime + "</span><br>" + getOpenDays(elem['openTimes']) + "</br>" + "</p>" +
+
+	if (elem.open) {
+		details += "<p>Open: <span style='color: green'>"
+	}
+	else {
+		details += "<p>Closed: <span style='color: red'>"
+	}
+
+	details = details + startTime + " - " + endTime + "</span><br>" + getOpenDays(elem['openTimes']) + "</br>" + "</p>" +
 		"<a href='https://www.google.com/maps/dir/?api=1&destination=" + elem.lat + "," + elem.long + "' class='btn btn-primary'>Get Directions</a>" +
 		"</center>"
 	return details
 }
 
 
-function loadFavorites(){
+function loadFavorites() {
 	favorites = Cookies.getJSON("favorites")
-	if (favorites == null){
+	if (favorites == null) {
 		Cookies.set("favorites", [])
 		favorites = []
 	}
@@ -171,22 +171,22 @@ function loadFavorites(){
 
 function getOpenDays(dates) {
 	let set = new Set()
-	let numToDate = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
+	let numToDate = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 	for (let i = 0; i < dates.length; i++) {
 		let temp = dates[i].split('T')
 		let locdate = temp[0]
 		let locTime = temp[1].split('-')[0]
-		let dateObj = new Date(locdate+'T'+locTime)
+		let dateObj = new Date(locdate + 'T' + locTime)
 		set.add(dateObj.getDay())
 	}
 	out = ""
 	set.forEach((value1, value2) => out += numToDate[value1] + ",")
-	out = out.substring(0,out.length-1)
+	out = out.substring(0, out.length - 1)
 	console.log(out)
 	return out
 }
 //use this every time you add or remove something from favorites
-function updateFavorites(){
+function updateFavorites() {
 	Cookies.set("favorites", favorites)
 }
 
@@ -197,18 +197,31 @@ function condenseLocations(locations) {
 	let map = new Object()
 	while (i < locations.length) {
 		loc = locations[i]['location']
-		if(!(loc in map)) {
+		if (!(loc in map)) {
 			map[loc] = i
 			locations[i]['openTimes'] = [locations[i]['start']]
 			i += 1
 		} else {
 			let j = map[loc]
 			locations[j]['openTimes'].push(locations[i]['start'])
-			locations.splice(i,1)
+			locations.splice(i, 1)
 		}
 	}
 }
 
+function getLocation() {
+	if (navigator.geolocation) {
+		navigator.geolocation.getCurrentPosition(showPosition);
+	} else {
+		alert("Geolocation is not supported by this browser.")
+	}
+}
+
+function showPosition(position) {
+	lat = position.coords.latitude
+	lng = position.coords.longitude
+	initMap()
+}
 
 $(function () {
 	//Set date pickers to today and 1 week from today
@@ -219,9 +232,9 @@ $(function () {
 	end.setDate(today.getDate() + 7)
 	document.getElementById('endDate').valueAsDate = end
 	filterEndDate = end
-	filterEndDate.setHours(23,59,59,0)
+	filterEndDate.setHours(23, 59, 59, 0)
 	loadFavorites()
-	
+	getLocation()
 	setTimeout(() => {
 		console.log("loaded")
 		$.getJSON("/loadDates", function (data) {
