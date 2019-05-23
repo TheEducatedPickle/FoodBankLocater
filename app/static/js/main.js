@@ -138,7 +138,7 @@ function genDetails(elem) {
 		  '</label>' +
 		  */
 
-		"<p>" + elem.location + "</p>"
+		"<p style='margin-bottom:8px'>" + elem.location + "</p>"
 
 	let tempTime = elem['start'].split('T')[1].split('-')
 	let startTemp = tempTime[0].split(':')
@@ -146,20 +146,25 @@ function genDetails(elem) {
 	let endTemp = tempTime[1].split(':')
 	let endTime = endTemp[0] + ':' + endTemp[1]
 
-
 	if (elem.open) {
-		details += "<p>Open: <span style='color: green'>"
+		details += "<p style='margin-bottom:0px'><u>Open</u><span style='color: green'>"
 	}
 	else {
-		details += "<p>Closed: <span style='color: red'>"
+		details += "<p style='margin-bottom:0px'><u>Closed</u><span style='color: red'><br>"
 	}
 
-	details = details + startTime + " - " + endTime + "</span><br>" + getOpenDays(elem['openTimes']) + "</br>" + "</p>" +
+	details = details + 
+		//startTime + " - " + endTime + "</span><br>" + 
+		getOpenDays(elem['openTimes']) + "</br>" + "</p>" +
+		//"<a class='btn btn-primary' style='margin-bottom:2px; color:#ffffff'>Favorite</a><br>" +
 		"<a href='https://www.google.com/maps/dir/?api=1&destination=" + elem.lat + "," + elem.long + "' class='btn btn-primary'>Get Directions</a>" +
 		"</center>"
 	return details
 }
 
+function addFav(input) {
+	console.log(input)
+}
 
 function loadFavorites() {
 	favorites = Cookies.getJSON("favorites")
@@ -170,21 +175,43 @@ function loadFavorites() {
 }
 
 function getOpenDays(dates) {
-	let set = new Set()
+	let set = new Object()
 	let numToDate = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 	for (let i = 0; i < dates.length; i++) {
 		let temp = dates[i].split('T')
 		let locdate = temp[0]
-		let locTime = temp[1].split('-')[0]
-		let dateObj = new Date(locdate + 'T' + locTime)
-		set.add(dateObj.getDay())
+		let locTime = temp[1].split('-')
+		let dateObj = new Date(locdate + 'T' + locTime[0])
+		let endDateObj = new Date(locdate + 'T' + locTime[1])
+
+		let dayNum = dateObj.getDay()
+		if (!(Object.keys(set)).includes(dayNum)) {
+			set[dayNum] = []
+		}
+		set[dayNum].push([dateObj,endDateObj])
 	}
-	out = ""
-	set.forEach((value1, value2) => out += numToDate[value1] + ",")
-	out = out.substring(0, out.length - 1)
-	console.log(out)
+	out = ``
+	entries = Object.entries(set)
+	for (let i = 0; i < entries.length; i++) {
+		out += numToDate[entries[i][0]] + `: ` //Day of week append
+		let val = entries[i][1]
+		//console.log(val)
+		for (let j = 0; j < val.length; j++) {	//Time for each day append
+			out += getFormattedTime(val[j][0]) + ` - ` + getFormattedTime(val[j][1])
+		}
+		out += `<br>`
+	}
+	//out = out.substring(0, out.length - 1)
+	//console.log(out)
 	return out
 }
+
+function getFormattedTime(d){
+    d = ('0' + d.getHours()).slice(-2) + ":" + ('0' + d.getMinutes()).slice(-2)
+
+    return d;
+}
+
 //use this every time you add or remove something from favorites
 function updateFavorites() {
 	Cookies.set("favorites", favorites)
@@ -207,6 +234,7 @@ function condenseLocations(locations) {
 			locations.splice(i, 1)
 		}
 	}
+	console.log(locations)
 }
 
 function getLocation() {
