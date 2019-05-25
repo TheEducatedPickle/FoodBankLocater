@@ -147,10 +147,10 @@ function genDetails(elem) {
 	let endTime = endTemp[0] + ':' + endTemp[1]
 
 	if (elem.open) {
-		details += "<p style='margin-bottom:0px'><u>Open</u><span style='color: green'>"
+		details += "<p style='margin-bottom:0px'><span style='color: green'>Open</span><br>"
 	}
 	else {
-		details += "<p style='margin-bottom:0px'><u>Closed</u><span style='color: red'><br>"
+		details += "<p style='margin-bottom:0px'><span style='color: red'>Closed</span><br>"
 	}
 
 	details = details + 
