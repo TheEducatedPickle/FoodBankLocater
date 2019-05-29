@@ -45,9 +45,9 @@ function shouldFilter(location, byTime = false) {
 	let startTime = tempTime[0].split(':')
 	let endTime = tempTime[1].split(':')
 
-	if (!favorites.includes(location['title']) && showOnlyFavorites) { //dont show location if it isn't favorited
+	if (!favorites.includes(location['location'].hashCode().toString()) && showOnlyFavorites) { //dont show location if it isn't favorited
 		return true;
-	}
+	} 
 	//console.log(new Date($('#startDate').val()))
 	/*
 	if (byTime && startTimeInMinutes < filterStartTime || endTimeInMinutes > filterEndTime) { //too early or late
@@ -113,6 +113,17 @@ function initMap() {
 	}
 }
 
+String.prototype.hashCode = function() {
+  var hash = 0, i, chr;
+  if (this.length === 0) return hash;
+  for (i = 0; i < this.length; i++) {
+    chr   = this.charCodeAt(i);
+    hash  = ((hash << 5) - hash) + chr;
+    hash |= 0; // Convert to 32bit integer
+  }
+  return hash;
+};
+
 function updateBound() {
 	filterStartDate = new Date($('#startDate').val())
 	filterStartDate.setHours(0, 0, 0, 0)
@@ -149,21 +160,30 @@ function genDetails(elem) {
 	if (elem.open) {
 		details += "<p style='margin-bottom:0px'><span style='color: green'>Open</span><br>"
 	}
-	else {
-		details += "<p style='margin-bottom:0px'><span style='color: red'>Closed</span><br>"
+	else if (elem) {
+		details += "<p style='margin-bottom:0px'><b>Open Times:</b><br>"
 	}
 
 	details = details + 
 		//startTime + " - " + endTime + "</span><br>" + 
 		getOpenDays(elem['openTimes']) + "</br>" + "</p>" +
-		//"<a class='btn btn-primary' style='margin-bottom:2px; color:#ffffff'>Favorite</a><br>" +
+		"<a class='btn btn-primary' style='margin-bottom:2px; color:#ffffff' onClick=addFav(`" + elem.location.hashCode() + "`)>Favorite</a><br>" +
 		"<a href='https://www.google.com/maps/dir/?api=1&destination=" + elem.lat + "," + elem.long + "' class='btn btn-primary'>Get Directions</a>" +
 		"</center>"
 	return details
 }
 
 function addFav(input) {
-	console.log(input)
+	console.log(favorites)
+	for (let i = 0; i < favorites.length; i++) {
+		if (favorites[i] == input) {
+			favorites.splice(i,1)
+			updateFavorites()
+			return
+		}
+	}
+	favorites.push(input)
+	updateFavorites()
 }
 
 function loadFavorites() {
