@@ -40,31 +40,39 @@ var locations = [
 		*/
 ]
 
-function shouldFilter(location, byTime = false) {
-	let tempTime = location['start'].split('T')[1].split('-')
-	let startTime = tempTime[0].split(':')
-	let endTime = tempTime[1].split(':')
 
-	if (!favorites.includes(location['title']) && showOnlyFavorites) { //dont show location if it isn't favorited
-		return true;
-	}
-	//console.log(new Date($('#startDate').val()))
-	/*
-	if (byTime && startTimeInMinutes < filterStartTime || endTimeInMinutes > filterEndTime) { //too early or late
-		console.log('Filtered ' + location['title'] + startTimeInMinutes)
-		return true
-	}
-	*/
+function shouldFilter(locs, byTime = false) {
 
-	//Check date range
-	let locdate = location['start'].split('T')[0]
-	let locTime = location['start'].split('T')[1].split('-')[0]
-	let locCmpDate = new Date(locdate + 'T' + locTime)
-	let inRange = (locCmpDate.getTime() > filterStartDate.getTime() && locCmpDate.getTime() < filterEndDate.getTime())
-	//console.log('THIS EVENTS DATE IS: ' + locCmpDate)
+	locs['times'].forEach((location, idx) => {
 
-	//console.log(inRange + ' - ' + locCmpDate)
-	return !(inRange);
+		let tempTime = location['start'].split('T')[1].split('-')
+		let startTime = tempTime[0].split(':')
+		let endTime = tempTime[1].split(':')
+
+		if (!favorites.includes(location['title']) && showOnlyFavorites) { //dont show location if it isn't favorited
+			return true;
+		}
+		//console.log(new Date($('#startDate').val()))
+		/*
+		if (byTime && startTimeInMinutes < filterStartTime || endTimeInMinutes > filterEndTime) { //too early or late
+			console.log('Filtered ' + location['title'] + startTimeInMinutes)
+			return true
+		}
+		*/
+
+		//Check date range
+		let locdate = location['start'].split('T')[0]
+		let locTime = location['start'].split('T')[1].split('-')[0]
+		let locCmpDate = new Date(locdate + 'T' + locTime)
+		let inRange = (locCmpDate.getTime() > filterStartDate.getTime() && locCmpDate.getTime() < filterEndDate.getTime())
+		//console.log('THIS EVENTS DATE IS: ' + locCmpDate)
+
+		//console.log(inRange + ' - ' + locCmpDate)
+		if(!inRange){
+			return true
+		}
+	})
+	return false
 }
 
 function convertToMinutes(hours, minutes) {
@@ -140,12 +148,6 @@ function genDetails(elem) {
 
 		"<p style='margin-bottom:8px'>" + elem.location + "</p>"
 
-	let tempTime = elem['start'].split('T')[1].split('-')
-	let startTemp = tempTime[0].split(':')
-	let startTime = startTemp[0] + ':' + startTemp[1]
-	let endTemp = tempTime[1].split(':')
-	let endTime = endTemp[0] + ':' + endTemp[1]
-
 	if (elem.open) {
 		details += "<p style='margin-bottom:0px'><span style='color: green'>Open</span><br>"
 	}
@@ -155,7 +157,7 @@ function genDetails(elem) {
 
 	details = details + 
 		//startTime + " - " + endTime + "</span><br>" + 
-		getOpenDays(elem['openTimes']) + "</br>" + "</p>" +
+		getOpenDays(elem['times']) + "</br>" + "</p>" +
 		//"<a class='btn btn-primary' style='margin-bottom:2px; color:#ffffff'>Favorite</a><br>" +
 		"<a href='https://www.google.com/maps/dir/?api=1&destination=" + elem.lat + "," + elem.long + "' class='btn btn-primary'>Get Directions</a>" +
 		"</center>"
@@ -174,35 +176,32 @@ function loadFavorites() {
 	}
 }
 
-function getOpenDays(dates) {
-	let set = new Object()
-	let numToDate = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
-	for (let i = 0; i < dates.length; i++) {
-		let temp = dates[i].split('T')
-		let locdate = temp[0]
-		let locTime = temp[1].split('-')
-		let dateObj = new Date(locdate + 'T' + locTime[0])
-		let endDateObj = new Date(locdate + 'T' + locTime[1])
+function getOpenDays(dates){
+	let daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+	var days = {}
+	dates.forEach((date, idx) => {
+		var locdate = date['start'].split('T')[0]
+		var startTime = date['start'].split('T')[1].split('-')[0]
+		var endTime = date['end'].split('T')[1].split('-')[0]
+		var dateObj = new Date(locdate + 'T' + startTime)
+		var endDateObj = new Date(locdate + 'T' + endTime)
 
 		let dayNum = dateObj.getDay()
-		if (!(Object.keys(set)).includes(dayNum)) {
-			set[dayNum] = []
+		if (! (dayNum in days)) {
+			days[dayNum] = []
 		}
-		set[dayNum].push([dateObj,endDateObj])
-	}
-	out = ``
-	entries = Object.entries(set)
-	for (let i = 0; i < entries.length; i++) {
-		out += numToDate[entries[i][0]] + `: ` //Day of week append
-		let val = entries[i][1]
-		//console.log(val)
-		for (let j = 0; j < val.length; j++) {	//Time for each day append
-			out += getFormattedTime(val[j][0]) + ` - ` + getFormattedTime(val[j][1])
-		}
+		days[dayNum].push([dateObj,endDateObj])
+	})
+	var out = ''
+	for(day in days){
+		var entry = days[day]
+		out += daysOfWeek[day] + `: ` //Day of week append
+		console.log(entry)
+		let val = entry[0]
+
+		out += getFormattedTime(val[0]) + ` - ` + getFormattedTime(val[1])
 		out += `<br>`
 	}
-	//out = out.substring(0, out.length - 1)
-	//console.log(out)
 	return out
 }
 
