@@ -20,24 +20,7 @@ let lat = 36.97, lng = -121.99
 let favorites = []
 
 var locations = [
-	/*
-		{
-			title: "Graybears Shelter",
-			location: "5224 N Broadway St",
-			lat: 36.975,
-		long: -121.95,
-		hours: "9:00 - 4:00",
-		open: true,
-		},
-		{
-			title: "Greenpeace Center",
-			location: "216 Central Ave",
-			lat: 36.978,
-		long: -122.02,
-		hours: "9:00 - 4:00",
-		open: false,
-		},
-		*/
+
 ]
 
 
@@ -46,7 +29,7 @@ function shouldFilter(locs, byTime = false) {
 	if (!favorites.includes(locs['location'].hashCode().toString()) && showOnlyFavorites) { //dont show location if it isn't favorited
 		return true;
 	}
-
+	let rtValue = true
 	locs['times'].forEach((location, idx) => {
 		let tempTime = location['start'].split('T')[1].split('-')
 
@@ -66,11 +49,12 @@ function shouldFilter(locs, byTime = false) {
 		//console.log('THIS EVENTS DATE IS: ' + locCmpDate)
 
 		//console.log(inRange + ' - ' + locCmpDate)
-		if (!inRange) {
-			return true
+
+		if (inRange) {
+			rtValue = false
 		}
 	})
-	return false
+	return rtValue
 }
 
 function convertToMinutes(hours, minutes) {
