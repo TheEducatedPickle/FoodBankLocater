@@ -43,15 +43,13 @@ var locations = [
 
 function shouldFilter(locs, byTime = false) {
 
+	if (!favorites.includes(locs['location'].hashCode().toString()) && showOnlyFavorites) { //dont show location if it isn't favorited
+		return true;
+	}
+
 	locs['times'].forEach((location, idx) => {
-
 		let tempTime = location['start'].split('T')[1].split('-')
-		let startTime = tempTime[0].split(':')
-		let endTime = tempTime[1].split(':')
 
-		if (!favorites.includes(location['title']) && showOnlyFavorites) { //dont show location if it isn't favorited
-			return true;
-		}
 		//console.log(new Date($('#startDate').val()))
 		/*
 		if (byTime && startTimeInMinutes < filterStartTime || endTimeInMinutes > filterEndTime) { //too early or late
@@ -68,7 +66,7 @@ function shouldFilter(locs, byTime = false) {
 		//console.log('THIS EVENTS DATE IS: ' + locCmpDate)
 
 		//console.log(inRange + ' - ' + locCmpDate)
-		if(!inRange){
+		if (!inRange) {
 			return true
 		}
 	})
@@ -152,20 +150,29 @@ function genDetails(elem) {
 		details += "<p style='margin-bottom:0px'><span style='color: green'>Open</span><br>"
 	}
 	else {
-		details += "<p style='margin-bottom:0px'><span style='color: red'>Closed</span><br>"
+		details += "<p style='margin-bottom:0px'><b>Open Times:</b><br>"
 	}
 
-	details = details + 
+	details = details +
 		//startTime + " - " + endTime + "</span><br>" + 
 		getOpenDays(elem['times']) + "</br>" + "</p>" +
-		//"<a class='btn btn-primary' style='margin-bottom:2px; color:#ffffff'>Favorite</a><br>" +
+		"<a class='btn btn-primary' style='margin-bottom:2px; color:#ffffff' onClick=addFav(`" + elem.location.hashCode() + "`)>Favorite</a><br>" +
 		"<a href='https://www.google.com/maps/dir/?api=1&destination=" + elem.lat + "," + elem.long + "' class='btn btn-primary'>Get Directions</a>" +
 		"</center>"
 	return details
 }
 
 function addFav(input) {
-	console.log(input)
+	console.log(favorites)
+	for (let i = 0; i < favorites.length; i++) {
+		if (favorites[i] == input) {
+			favorites.splice(i, 1)
+			updateFavorites()
+			return
+		}
+	}
+	favorites.push(input)
+	updateFavorites()
 }
 
 function loadFavorites() {
@@ -176,7 +183,7 @@ function loadFavorites() {
 	}
 }
 
-function getOpenDays(dates){
+function getOpenDays(dates) {
 	let daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 	var days = {}
 	dates.forEach((date, idx) => {
@@ -187,13 +194,13 @@ function getOpenDays(dates){
 		var endDateObj = new Date(locdate + 'T' + endTime)
 
 		let dayNum = dateObj.getDay()
-		if (! (dayNum in days)) {
+		if (!(dayNum in days)) {
 			days[dayNum] = []
 		}
-		days[dayNum].push([dateObj,endDateObj])
+		days[dayNum].push([dateObj, endDateObj])
 	})
 	var out = ''
-	for(day in days){
+	for (day in days) {
 		var entry = days[day]
 		out += daysOfWeek[day] + `: ` //Day of week append
 		console.log(entry)
@@ -205,10 +212,10 @@ function getOpenDays(dates){
 	return out
 }
 
-function getFormattedTime(d){
-    d = ('0' + d.getHours()).slice(-2) + ":" + ('0' + d.getMinutes()).slice(-2)
+function getFormattedTime(d) {
+	d = ('0' + d.getHours()).slice(-2) + ":" + ('0' + d.getMinutes()).slice(-2)
 
-    return d;
+	return d;
 }
 
 //use this every time you add or remove something from favorites
@@ -273,5 +280,14 @@ $(function () {
 	})
 })
 
-
+String.prototype.hashCode = function () {
+	var hash = 0, i, chr;
+	if (this.length === 0) return hash;
+	for (i = 0; i < this.length; i++) {
+		chr = this.charCodeAt(i);
+		hash = ((hash << 5) - hash) + chr;
+		hash |= 0; // Convert to 32bit integer
+	}
+	return hash;
+};
 
