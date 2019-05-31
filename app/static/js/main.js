@@ -20,51 +20,41 @@ let lat = 36.97, lng = -121.99
 let favorites = []
 
 var locations = [
-	/*
-		{
-			title: "Graybears Shelter",
-			location: "5224 N Broadway St",
-			lat: 36.975,
-		long: -121.95,
-		hours: "9:00 - 4:00",
-		open: true,
-		},
-		{
-			title: "Greenpeace Center",
-			location: "216 Central Ave",
-			lat: 36.978,
-		long: -122.02,
-		hours: "9:00 - 4:00",
-		open: false,
-		},
-		*/
+
 ]
 
-function shouldFilter(location, byTime = false) {
-	let tempTime = location['start'].split('T')[1].split('-')
-	let startTime = tempTime[0].split(':')
-	let endTime = tempTime[1].split(':')
 
-	if (!favorites.includes(location['location'].hashCode().toString()) && showOnlyFavorites) { //dont show location if it isn't favorited
+function shouldFilter(locs, byTime = false) {
+
+	if (!favorites.includes(locs['location'].hashCode().toString()) && showOnlyFavorites) { //dont show location if it isn't favorited
 		return true;
-	} 
-	//console.log(new Date($('#startDate').val()))
-	/*
-	if (byTime && startTimeInMinutes < filterStartTime || endTimeInMinutes > filterEndTime) { //too early or late
-		console.log('Filtered ' + location['title'] + startTimeInMinutes)
-		return true
 	}
-	*/
+	let rtValue = true
+	locs['times'].forEach((location, idx) => {
+		let tempTime = location['start'].split('T')[1].split('-')
 
-	//Check date range
-	let locdate = location['start'].split('T')[0]
-	let locTime = location['start'].split('T')[1].split('-')[0]
-	let locCmpDate = new Date(locdate + 'T' + locTime)
-	let inRange = (locCmpDate.getTime() > filterStartDate.getTime() && locCmpDate.getTime() < filterEndDate.getTime())
-	//console.log('THIS EVENTS DATE IS: ' + locCmpDate)
+		//console.log(new Date($('#startDate').val()))
+		/*
+		if (byTime && startTimeInMinutes < filterStartTime || endTimeInMinutes > filterEndTime) { //too early or late
+			console.log('Filtered ' + location['title'] + startTimeInMinutes)
+			return true
+		}
+		*/
 
-	//console.log(inRange + ' - ' + locCmpDate)
-	return !(inRange);
+		//Check date range
+		let locdate = location['start'].split('T')[0]
+		let locTime = location['start'].split('T')[1].split('-')[0]
+		let locCmpDate = new Date(locdate + 'T' + locTime)
+		let inRange = (locCmpDate.getTime() > filterStartDate.getTime() && locCmpDate.getTime() < filterEndDate.getTime())
+		//console.log('THIS EVENTS DATE IS: ' + locCmpDate)
+
+		//console.log(inRange + ' - ' + locCmpDate)
+
+		if (inRange) {
+			rtValue = false
+		}
+	})
+	return rtValue
 }
 
 function convertToMinutes(hours, minutes) {
@@ -113,17 +103,6 @@ function initMap() {
 	}
 }
 
-String.prototype.hashCode = function() {
-  var hash = 0, i, chr;
-  if (this.length === 0) return hash;
-  for (i = 0; i < this.length; i++) {
-    chr   = this.charCodeAt(i);
-    hash  = ((hash << 5) - hash) + chr;
-    hash |= 0; // Convert to 32bit integer
-  }
-  return hash;
-};
-
 function updateBound() {
 	filterStartDate = new Date($('#startDate').val())
 	filterStartDate.setHours(0, 0, 0, 0)
@@ -151,22 +130,16 @@ function genDetails(elem) {
 
 		"<p style='margin-bottom:8px'>" + elem.location + "</p>"
 
-	let tempTime = elem['start'].split('T')[1].split('-')
-	let startTemp = tempTime[0].split(':')
-	let startTime = startTemp[0] + ':' + startTemp[1]
-	let endTemp = tempTime[1].split(':')
-	let endTime = endTemp[0] + ':' + endTemp[1]
-
 	if (elem.open) {
 		details += "<p style='margin-bottom:0px'><span style='color: green'>Open</span><br>"
 	}
-	else if (elem) {
+	else {
 		details += "<p style='margin-bottom:0px'><b>Open Times:</b><br>"
 	}
 
-	details = details + 
+	details = details +
 		//startTime + " - " + endTime + "</span><br>" + 
-		getOpenDays(elem['openTimes']) + "</br>" + "</p>" +
+		getOpenDays(elem['times']) + "</br>" + "</p>" +
 		"<a class='btn btn-primary' style='margin-bottom:2px; color:#ffffff' onClick=addFav(`" + elem.location.hashCode() + "`)>Favorite</a><br>" +
 		"<a href='https://www.google.com/maps/dir/?api=1&destination=" + elem.lat + "," + elem.long + "' class='btn btn-primary'>Get Directions</a>" +
 		"</center>"
@@ -177,7 +150,7 @@ function addFav(input) {
 	console.log(favorites)
 	for (let i = 0; i < favorites.length; i++) {
 		if (favorites[i] == input) {
-			favorites.splice(i,1)
+			favorites.splice(i, 1)
 			updateFavorites()
 			return
 		}
@@ -195,41 +168,38 @@ function loadFavorites() {
 }
 
 function getOpenDays(dates) {
-	let set = new Object()
-	let numToDate = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
-	for (let i = 0; i < dates.length; i++) {
-		let temp = dates[i].split('T')
-		let locdate = temp[0]
-		let locTime = temp[1].split('-')
-		let dateObj = new Date(locdate + 'T' + locTime[0])
-		let endDateObj = new Date(locdate + 'T' + locTime[1])
+	let daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+	var days = {}
+	dates.forEach((date, idx) => {
+		var locdate = date['start'].split('T')[0]
+		var startTime = date['start'].split('T')[1].split('-')[0]
+		var endTime = date['end'].split('T')[1].split('-')[0]
+		var dateObj = new Date(locdate + 'T' + startTime)
+		var endDateObj = new Date(locdate + 'T' + endTime)
 
 		let dayNum = dateObj.getDay()
-		if (!(Object.keys(set)).includes(dayNum)) {
-			set[dayNum] = []
+		if (!(dayNum in days)) {
+			days[dayNum] = []
 		}
-		set[dayNum].push([dateObj,endDateObj])
-	}
-	out = ``
-	entries = Object.entries(set)
-	for (let i = 0; i < entries.length; i++) {
-		out += numToDate[entries[i][0]] + `: ` //Day of week append
-		let val = entries[i][1]
-		//console.log(val)
-		for (let j = 0; j < val.length; j++) {	//Time for each day append
-			out += getFormattedTime(val[j][0]) + ` - ` + getFormattedTime(val[j][1])
-		}
+		days[dayNum].push([dateObj, endDateObj])
+	})
+	var out = ''
+	for (day in days) {
+		var entry = days[day]
+		out += daysOfWeek[day] + `: ` //Day of week append
+		console.log(entry)
+		let val = entry[0]
+
+		out += getFormattedTime(val[0]) + ` - ` + getFormattedTime(val[1])
 		out += `<br>`
 	}
-	//out = out.substring(0, out.length - 1)
-	//console.log(out)
 	return out
 }
 
-function getFormattedTime(d){
-    d = ('0' + d.getHours()).slice(-2) + ":" + ('0' + d.getMinutes()).slice(-2)
+function getFormattedTime(d) {
+	d = ('0' + d.getHours()).slice(-2) + ":" + ('0' + d.getMinutes()).slice(-2)
 
-    return d;
+	return d;
 }
 
 //use this every time you add or remove something from favorites
@@ -294,5 +264,14 @@ $(function () {
 	})
 })
 
-
+String.prototype.hashCode = function () {
+	var hash = 0, i, chr;
+	if (this.length === 0) return hash;
+	for (i = 0; i < this.length; i++) {
+		chr = this.charCodeAt(i);
+		hash = ((hash << 5) - hash) + chr;
+		hash |= 0; // Convert to 32bit integer
+	}
+	return hash;
+};
 
