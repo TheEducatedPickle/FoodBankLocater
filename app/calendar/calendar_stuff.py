@@ -58,7 +58,7 @@ def getEvents():
 
     # Call the Calendar API
     now = datetime.datetime.utcnow().isoformat() + 'Z' # 'Z' indicates UTC time
-    print('Getting the upcoming 10 events')
+    print('Getting the upcoming events')
     events_result = service.events().list(calendarId='vel0ek3mdioh6m18iepr85degk@group.calendar.google.com', timeMin=now,
                                         maxResults=35, singleEvents=True,
                                         orderBy='startTime').execute()
@@ -66,33 +66,41 @@ def getEvents():
 
     filtered_events = []
 
-
     if not events:
         print('No upcoming events found.')
     for event in events:
-        start = event['start'].get('dateTime', event['start'].get('date'))
+        print(event)
+        startEnd = {
+            'start': event['start'].get('dateTime', event['start'].get('date')),
+            'end': event['end'].get('dateTime', event['end'].get('date')),
+            }
 
-        temp_event = {}
-        temp_event['title'] = event['summary']
-        temp_event['location'] = event['location']
-        temp_event['start'] = event['start'].get('dateTime', event['start'].get('date'))
-        temp_event['end'] = event['start'].get('dateTime', event['end'].get('date'))
+        foundEvent = False
+        for e in filtered_events:
+            if e['title'] == event['summary']:
+                foundEvent = True
+                e['times'].append(startEnd)
+        if not foundEvent:
+            temp_event = {}
+            temp_event['title'] = event['summary']
+            temp_event['location'] = event['location']
+            temp_event['times'] = [startEnd]
 
-        if not event['id'] in locations:
-            print("no latlong")
-            url = "https://maps.googleapis.com/maps/api/geocode/json?"
-            req = {}
-            req['address'] = event['location'] + "California USA"
-            req['key'] = "AIzaSyCcXBAjbujUiiVRO375Dz2_Hm0p6K9ilLM"
-            r = requests.get(url + urllib.parse.urlencode(req))
-            geo = r.json()['results'][0]['geometry']['location']
+            if not event['id'] in locations:
+                print("no latlong")
+                url = "https://maps.googleapis.com/maps/api/geocode/json?"
+                req = {}
+                req['address'] = event['location'] + "California USA"
+                req['key'] = "AIzaSyCcXBAjbujUiiVRO375Dz2_Hm0p6K9ilLM"
+                r = requests.get(url + urllib.parse.urlencode(req))
+                geo = r.json()['results'][0]['geometry']['location']
 
-            locations[event['id']] = geo
-            save_obj(locations, "locations")
+                locations[event['id']] = geo
+                save_obj(locations, "locations")
 
-        temp_event['lat'] = locations[event['id']]['lat']
-        temp_event['long'] = locations[event['id']]['lng']
-        filtered_events.append(temp_event)
+            temp_event['lat'] = locations[event['id']]['lat']
+            temp_event['long'] = locations[event['id']]['lng']
+            filtered_events.append(temp_event)
     return filtered_events
 
 
