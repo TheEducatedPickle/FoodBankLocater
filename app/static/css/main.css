@@ -1,8 +1,14 @@
-.mainHeader{
-	font-size: 80px;
+.header{
+	background-color: white;
+	padding-bottom: 20px;
+	margin-bottom: 20px;
 }
+.header h2{
+	margin: 0px;
+}
+
 body{
-	background: rgb(245, 245, 245);
+	background: #eee;
 	height: 100%
 }
 html,
@@ -10,6 +16,9 @@ body {
   height: 100%;
   margin: 0;
   padding: 0;
+}
+p{
+	font-size: 18px;
 }
 .main{
 	display: flex;
@@ -22,4 +31,29 @@ body {
 #map {
   height: 500px;
   flex: 1 1 auto;
+  position: relative;
 }
+.footer{
+	padding-top: 25px;
+	background-color: #009645;
+	width: 100%;
+	color: white;
+}
+.footer a{
+	color: lightblue;
+	font-weight: bold;
+}
+
+.vertical-center {
+  min-height: 100%;  /* Fallback for browsers do NOT support vh unit */
+
+  display: flex;
+  align-items: center;
+}
+.controls{
+	padding-left: 100px;
+	top: 0;
+	right: 0;
+	z-index: 999;
+}
+
