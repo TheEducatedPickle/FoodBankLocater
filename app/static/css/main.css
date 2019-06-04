@@ -1,7 +1,7 @@
 .header {
     background-color: white;
     padding-bottom: 20px;
-    margin-bottom: 20px;
+    margin-bottom: 5px;
 }
 
 .header h2 {
@@ -33,17 +33,32 @@ p {
 .main .container {
     flex: 0 1 auto;
 }
-
-#map {
-    height: 1000px;
-    flex: 1 1 auto;
-    position: relative;
+@media (max-width: 800px) {
+    #map {
+        height: 1000px;
+        flex: 1 1 auto;
+        position: relative;
+    }
+    p {
+        font-size: 25px;
+    }
 }
+@media (min-width: 800px) {
+    #map {
+        height: 600px;
+        flex: 1 1 auto;
+        position: relative;
+    }
+    p {
+        font-size: 18px;
+    }
+}
+
 
 #favfilter {
     margin: 0px 5px 0px 0px;
-    width: 45px;
-    height: 45px;
+    width: 25px;
+    height: 25px;
 }
 
 .footer {
@@ -53,7 +68,6 @@ p {
     background-color: #009645;
     width: 100%;
     color: white;
-    font-size: 25px;
 }
 
 .footer a {
@@ -62,9 +76,7 @@ p {
     font-weight: bold;
 }
 
-.row {
-    font-size: 35px;
-}
+
 
 .vertical-center {
     min-height: 100%;
@@ -74,8 +86,8 @@ p {
 }
 
 .controls {
-    padding-top: 15px;
     padding-left: 100px;
+    padding-bottom: 5px;
     top: 0;
     right: 0;
     z-index: 999;
