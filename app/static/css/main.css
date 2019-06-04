@@ -33,7 +33,7 @@ p {
 .main .container {
     flex: 0 1 auto;
 }
-@media (max-width: 800px) {
+@media (max-width: 1000px) {
     #map {
         height: 1000px;
         flex: 1 1 auto;
@@ -43,7 +43,7 @@ p {
         font-size: 25px;
     }
 }
-@media (min-width: 800px) {
+@media (min-width: 1000px) {
     #map {
         height: 600px;
         flex: 1 1 auto;
