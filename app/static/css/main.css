@@ -1,59 +1,83 @@
-.header{
-	background-color: white;
-	padding-bottom: 20px;
-	margin-bottom: 20px;
-}
-.header h2{
-	margin: 0px;
+.header {
+    background-color: white;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
 }
 
-body{
-	background: #eee;
-	height: 100%
+.header h2 {
+    margin: 0px;
 }
+
+body {
+    background: #eee;
+    height: 100%
+}
+
 html,
 body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
+    height: 100%;
+    margin: 0;
+    padding: 0;
 }
-p{
-	font-size: 18px;
+
+p {
+    font-size: 18px;
 }
-.main{
-	display: flex;
-	flex-flow: column;
-  height: 100%;
+
+.main {
+    display: flex;
+    flex-flow: column;
+    height: 100%;
 }
-.main .container{
-	flex: 0 1 auto;
+
+.main .container {
+    flex: 0 1 auto;
 }
+
 #map {
-  height: 500px;
-  flex: 1 1 auto;
-  position: relative;
+    height: 1000px;
+    flex: 1 1 auto;
+    position: relative;
 }
-.footer{
-	padding-top: 25px;
-	background-color: #009645;
-	width: 100%;
-	color: white;
+
+#favfilter {
+    margin: 0px 5px 0px 0px;
+    width: 45px;
+    height: 45px;
 }
-.footer a{
-	color: lightblue;
-	font-weight: bold;
+
+.footer {
+    padding: 25px 0px 25px 0px;
+    margin: 0px 0px 0px 0px;
+    border: 0px 0px 0px 0px;
+    padding: 0px 0px 0px 0px;
+    background-color: #009645;
+    width: 100%;
+    color: white;
+    font-size: 25px;
+}
+
+.footer a {
+    color: lightblue;
+    padding: 10px 0px 0px 0px;
+    font-weight: bold;
+}
+
+.row {
+    font-size: 35px;
 }
 
 .vertical-center {
-  min-height: 100%;  /* Fallback for browsers do NOT support vh unit */
-
-  display: flex;
-  align-items: center;
-}
-.controls{
-	padding-left: 100px;
-	top: 0;
-	right: 0;
-	z-index: 999;
+    min-height: 100%;
+    /* Fallback for browsers do NOT support vh unit */
+    display: flex;
+    align-items: center;
 }
 
+.controls {
+    padding-top: 15px;
+    padding-left: 100px;
+    top: 0;
+    right: 0;
+    z-index: 999;
+}
